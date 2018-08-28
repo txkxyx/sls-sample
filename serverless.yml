@@ -1,10 +1,10 @@
-service: sls-sample # サービス名
+service: sls-sample 
 
-provider: # デプロイ環境の設定
-  name: aws              # AWSにデプロイ
-  runtime: python3.6     # ランタイム言語
-  stage: dev             # デプロイステージ
-  region: ap-northeast-1 # デプロイリージョン
+provider: 
+  name: aws              
+  runtime: python3.6    
+  stage: dev             
+  region: ap-northeast-1 
   iamRoleStatements: 
     - Effect: Allow
       Action: "apigateway:*"
@@ -15,20 +15,17 @@ provider: # デプロイ環境の設定
     - Effect: Allow
       Action: "dynamodb:*"
       Resource: "arn:aws:dynamodb:*"
+    - Effect: Allow
+      Action: "logs:*"
+      Resource: "arn:aws:logs:*"
 
-functions: # Lambda関数の管理
-  put:
-    handler: handler.put_handler
+functions: 
+  post:
+    handler: handler.handle
     events: 
       - http: 
-          path: sls/sample/put
-          method: put
-  get: 
-    handler: handler.get_handler
-    events:
-      - http:
-          path: sls/sample/get
-          method: get
+          path: sls/sample/post
+          method: post
 
 resources:
   Resources:
@@ -38,13 +35,9 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: type
-            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: type
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
